@@ -1,10 +1,12 @@
 from enum import Enum
 import datetime
 import uuid
+from typing import Literal
+
 
 class Prioridade(Enum):
     BAIXA = "Baixa"
-    MEDIA = "Media"
+    MEDIA= "Media"
     ALTA = "Alta"
 
 
