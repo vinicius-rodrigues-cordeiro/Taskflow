@@ -1,7 +1,6 @@
 from enum import Enum
 import datetime
 import uuid
-from typing import Literal
 
 
 class Prioridade(Enum):
@@ -76,7 +75,7 @@ class Tarefa:
 
     def to_dict(self):
         return {
-            "id_tarefa": self.__id_tarefa,
+            "id_tarefa": str(self.__id_tarefa),
             "titulo": self.__titulo,
             "descricao": self.__descricao,
             "prioridade": self.__prioridade.value,

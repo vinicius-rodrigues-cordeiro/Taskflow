@@ -19,8 +19,8 @@ class TarefaRepo:
                 json.dump(dicionario, arq)
     def salvar(self, tarefa):
         dados = self.__carregar()
-        tarefa_dict = tarefa.to_dict()
-        dados[tarefa.id] = tarefa_dict
+        tarefa_dict= tarefa.to_dict()
+        dados[str(tarefa.id)] = tarefa_dict
         self.__salvar(dados)
         return dados
     def buscar_todos(self):
