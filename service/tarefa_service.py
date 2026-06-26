@@ -1,5 +1,4 @@
 import datetime
-from logging import exception
 
 from model.tarefa import Tarefa, Prioridade, Status
 from repository.tarefa_repo import TarefaRepo
@@ -31,36 +30,31 @@ class TarefaService:
         if t is None:
             raise Exception("Não existe uma tarefa com esse ID")
         else:
-            t.titulo = titulo
-            self.repo.atualizar(t.titulo)
+            if titulo is not None:
+                t.titulo = titulo
+            if prioridade is not None:
+                t.prioridade = Prioridade(prioridade)
 
-        if prioridade is not None:
-            t.prioridade = Prioridade(prioridade)
-            self.repo.atualizar(t.prioridade)
+            if prazo is not None:
+                try:
+                    t.prazo = datetime.datetime.fromisoformat(prazo)
+                except ValueError:
+                    raise ValueError("Formato de prazo invalido. Use AAAA-MM-DD")
 
-        try:
-            t.prazo = datetime.datetime.fromisoformat(prazo)
-        except ValueError:
-            raise ValueError("Formato de prazo invalido. Use AAAA-MM-DD")
+                if t.prazo <= datetime.datetime.now():
+                    raise ValueError("Prazo deve ser uma data futura")
 
-        if prazo is None or prazo <= datetime.datetime.now():
-                raise ValueError("Prazo deve ser uma data futura")
-        self.repo.atualizar(t.prazo)
+            if descricao is not None:
+                t.descricao = descricao
 
-        if descricao is not None:
-            t.descricao = descricao
-            self.repo.atualizar(t.descricao)
-
-
-    def atualizar_prioridade(self, prioridade):
-        pass
+            self.repo.atualizar(t)
 
     def atualizar_status(self, id_tarefa, novo_status, confirmacao=False):
         s = self.repo.buscar_por_id(id_tarefa)
         if s is None:
             raise Exception("Esse ID não existe")
         elif novo_status == Status.EM_ANDAMENTO and s.status == Status.CONCLUIDA:
-            if confirmacao == True:
+            if confirmacao:
                 s.status = novo_status
                 self.repo.atualizar(s)
             else:
@@ -69,11 +63,7 @@ class TarefaService:
             s.status = novo_status
             self.repo.atualizar(s)
 
-
-    def atualizar_prazo(self, prazo):
-        pass
-
-    def listar_tarefa(self):
+    def listar_tarefas(self):
         tarefas = self.repo.buscar_todos()
         t = []
         for tarefa in tarefas:
@@ -98,7 +88,7 @@ class TarefaService:
         if d is None:
             raise Exception("O ID não existe")
         elif d.status == Status.EM_ANDAMENTO:
-            if confirmacao == True:
+            if confirmacao:
                 self.repo.deletar(id_tarefa)
             else:
                 raise Exception("A tarefa não foi deletada")
