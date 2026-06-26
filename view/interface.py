@@ -1,5 +1,10 @@
 import tkinter as tk
+from enum import Enum
 from tkinter import ttk
+
+from model import tarefa
+from model.tarefa import Tarefa
+
 
 class JanelaPrincipal:
     def __init__(self, root, service):
@@ -35,6 +40,7 @@ class JanelaPrincipal:
         self.tabela.column('Col4', width=100)
         self.tabela.heading('Col5', text='Status')
         self.tabela.column('Col5', width=100)
+        self._carregar_tarefas()
         self.tabela.pack(fill='both', expand=True)
 
         self.btn_criar = tk.Button(self.sidebar, text="Criar", command=self.botao_criar_tarefa)
@@ -72,3 +78,18 @@ class JanelaPrincipal:
     def botao_cancelar_tarefa(self):
         print("Cancelar tarefa")
 
+    def _carregar_tarefas(self):
+        for item in self.tabela.get_children():
+            self.tabela.delete(item)
+
+        tarefas = self.service.listar_tarefas()
+        for t in tarefas:
+            self.tabela.insert(
+                '',
+                'end',
+                values=(t.criado_em,
+                        t.titulo,
+                        t.prioridade.value,
+                        t.prazo,
+                        t.status.value)
+            )
