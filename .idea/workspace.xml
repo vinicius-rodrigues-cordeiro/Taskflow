@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0b941b68-55a6-4673-9f9d-6d990a3f7360" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/tarefa_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/service/tarefa_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/view/interface.py" beforeDir="false" afterPath="$PROJECT_DIR$/view/interface.py" afterDir="false" />
-    </list>
+    <list default="true" id="0b941b68-55a6-4673-9f9d-6d990a3f7360" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -93,7 +89,7 @@
       <workItem from="1781653698443" duration="3140000" />
       <workItem from="1781819747065" duration="15672000" />
       <workItem from="1781911837030" duration="3381000" />
-      <workItem from="1781962567724" duration="31443000" />
+      <workItem from="1781962567724" duration="31951000" />
     </task>
     <servers />
   </component>
@@ -117,6 +113,6 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/taskflow$main.coverage" NAME="main Coverage Results" MODIFIED="1782521904603" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/taskflow$main.coverage" NAME="main Coverage Results" MODIFIED="1782522333156" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
