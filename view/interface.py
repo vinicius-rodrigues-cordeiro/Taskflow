@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 
 
@@ -56,11 +56,23 @@ class JanelaPrincipal:
     def botao_criar_tarefa(self):
         JanelaFormulario(self.root, self.service, self._carregar_tarefas)
     def botao_editar_tarefa(self):
-        print("Editar tarefa")
+        pass
+
     def botao_excluir_tarefa(self):
-        print("Excluir tarefa")
+        selecionado = self.tabela.selection()
+        if not selecionado:
+            messagebox.showwarning("Atenção", "Selecione uma tarefa primeiro.")
+            return None
+
+        self.id_tarefa = selecionado[0]
+        self.confirmado = messagebox.askyesno("Confirmar", "Deseja excluir esta tarefa?")
+        if self.confirmado:
+            self.service.deletar_tarefa(self.id_tarefa, confirmacao=True)
+            self._carregar_tarefas()
+        return None
+
     def botao_ver_tarefa(self):
-        print("Ver tarefa")
+        pass
 
 
     def _carregar_tarefas(self):
@@ -72,7 +84,7 @@ class JanelaPrincipal:
         for t in tarefas:
             self.tabela.insert(
                 '',
-                'end',
+                'end', iid=str(t.id),
                 values=(t.criado_em,
                         t.titulo,
                         t.prioridade.value,
@@ -106,7 +118,7 @@ class JanelaFormulario(tk.Toplevel):
         self.combo_box_prioridade.pack(pady=5)
 
         tk.Label(self, text="Status: ").pack(pady=5)
-        self.combo_box_status = ttk.Combobox(self, values=["Pendente", "Em andamento", "Concluida", "Cancelada"])
+        self.combo_box_status = ttk.Combobox(self, values=["Pendente"])
         self.combo_box_status.current(0)
         self.combo_box_status.pack(pady=5)
 
@@ -135,7 +147,7 @@ class JanelaFormulario(tk.Toplevel):
         descricao = self.entry_descricao.get()
         prioridade = self.combo_box_prioridade.get()
         prazo = self.prazo.get_date().strftime("%Y-%m-%d")
-        status = self.combo_box_status.get()
+        self.combo_box_status.get()
         self.service.criar_tarefa(titulo, prioridade, prazo, descricao)
         self.ao_salvar()
         self.destroy()

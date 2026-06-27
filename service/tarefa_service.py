@@ -26,6 +26,9 @@ class TarefaService:
 
         return self.repo.salvar(tarefa=Tarefa(titulo, descricao, prioridade, prazo))
 
+    def buscar_por_id(self, id_tarefa):
+        return self.repo.buscar_por_id(id_tarefa)
+
     def atualizar_tarefa(self, id_tarefa, titulo, prioridade, prazo, descricao):
         t = self.repo.buscar_por_id(id_tarefa)
 
