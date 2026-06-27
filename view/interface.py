@@ -1,9 +1,6 @@
 import tkinter as tk
-from enum import Enum
 from tkinter import ttk
-
-from model import tarefa
-from model.tarefa import Tarefa
+from tkcalendar import DateEntry
 
 
 class JanelaPrincipal:
@@ -55,34 +52,23 @@ class JanelaPrincipal:
         self.btn_ver = tk.Button(self.sidebar, text="Ver", command=self.botao_ver_tarefa)
         self.btn_ver.pack(side='top', fill='x')
 
-        self.rodape = tk.Frame(self.conteudo, bg='white')
-        self.rodape.pack(side='bottom', fill='x')
-
-        self.btn_cancelar = tk.Button(self.rodape, text="Cancelar", command=self.botao_cancelar_tarefa)
-        self.btn_cancelar.pack(side='left', fill='x')
-
-        self.btn_salvar = tk.Button(self.rodape, text="Salvar", command=self.botao_salvar_tarefa)
-        self.btn_salvar.pack(side='right', fill='x')
-
 
     def botao_criar_tarefa(self):
-        print("Criando tarefa")
+        JanelaFormulario(self.root, self.service, self._carregar_tarefas)
     def botao_editar_tarefa(self):
         print("Editar tarefa")
     def botao_excluir_tarefa(self):
         print("Excluir tarefa")
     def botao_ver_tarefa(self):
         print("Ver tarefa")
-    def botao_salvar_tarefa(self):
-        print("Salvar tarefa")
-    def botao_cancelar_tarefa(self):
-        print("Cancelar tarefa")
+
 
     def _carregar_tarefas(self):
         for item in self.tabela.get_children():
             self.tabela.delete(item)
 
         tarefas = self.service.listar_tarefas()
+
         for t in tarefas:
             self.tabela.insert(
                 '',
@@ -93,3 +79,68 @@ class JanelaPrincipal:
                         t.prazo,
                         t.status.value)
             )
+
+class JanelaFormulario(tk.Toplevel):
+    def __init__(self, parent, service, tarefas):
+        super().__init__(parent)
+        self.service = service
+        self.ao_salvar = tarefas
+        self.janela = tk.Frame(self, bg='white')
+        self.title('Formulario para criação de tarefas')
+        self.resizable(False, False)
+        self.geometry('300x300')
+        self.transient(parent)
+        self.grab_set()
+
+        tk.Label(self, text="Titulo: ").pack(pady=5)
+        self.entry_titulo = tk.Entry(self)
+        self.entry_titulo.pack(pady=5)
+
+        tk.Label(self, text="Descrição: ").pack(pady=5)
+        self.entry_descricao = tk.Entry(self)
+        self.entry_descricao.pack(pady=5)
+
+        tk.Label(self, text="Prioridade: ").pack(pady=5)
+        self.combo_box_prioridade = ttk.Combobox(self, values=["Baixa", "Media", "Alta"])
+        self.combo_box_prioridade.current(1)
+        self.combo_box_prioridade.pack(pady=5)
+
+        tk.Label(self, text="Status: ").pack(pady=5)
+        self.combo_box_status = ttk.Combobox(self, values=["Pendente", "Em andamento", "Concluida", "Cancelada"])
+        self.combo_box_status.current(0)
+        self.combo_box_status.pack(pady=5)
+
+        self.prazo = DateEntry(
+            self,
+            width=25,
+            background="darkblue",
+            foreground="white",
+            borderwidth=2,
+            locale="pt_BR",
+            date_pattern="dd/mm/yyyy",
+        )
+        self.prazo.pack(pady=5)
+
+        self.rodape = tk.Frame(self, bg='white')
+        self.rodape.pack(side='bottom', fill='x')
+
+        self.btn_cancelar = tk.Button(self.rodape, text="Cancelar", command=self.botao_cancelar_tarefa)
+        self.btn_cancelar.pack(side='left', fill='x')
+
+        self.btn_salvar = tk.Button(self.rodape, text="Salvar", command=self.botao_salvar_tarefa)
+        self.btn_salvar.pack(side='right', fill='x')
+
+    def botao_salvar_tarefa(self):
+        titulo = self.entry_titulo.get()
+        descricao = self.entry_descricao.get()
+        prioridade = self.combo_box_prioridade.get()
+        prazo = self.prazo.get_date().strftime("%Y-%m-%d")
+        status = self.combo_box_status.get()
+        self.service.criar_tarefa(titulo, prioridade, prazo, descricao)
+        self.ao_salvar()
+        self.destroy()
+
+
+
+    def botao_cancelar_tarefa(self):
+        self.destroy()

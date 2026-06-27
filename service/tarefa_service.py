@@ -13,6 +13,8 @@ class TarefaService:
 
         if prioridade is None:
             prioridade = Prioridade.MEDIA
+        else:
+            prioridade = Prioridade(prioridade)
 
         try:
             prazo = datetime.datetime.fromisoformat(prazo)
@@ -70,9 +72,6 @@ class TarefaService:
             if tarefa.status != Status.CANCELADA:
                 t.append(tarefa)
         return t
-
-
-
 
     def listar_canceladas(self):
         tarefas = self.repo.buscar_todos()

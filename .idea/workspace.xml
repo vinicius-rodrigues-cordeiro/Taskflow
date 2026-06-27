@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0b941b68-55a6-4673-9f9d-6d990a3f7360" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/tarefa_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/service/tarefa_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/view/interface.py" beforeDir="false" afterPath="$PROJECT_DIR$/view/interface.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -92,7 +93,7 @@
       <workItem from="1781653698443" duration="3140000" />
       <workItem from="1781819747065" duration="15672000" />
       <workItem from="1781911837030" duration="3381000" />
-      <workItem from="1781962567724" duration="23282000" />
+      <workItem from="1781962567724" duration="31443000" />
     </task>
     <servers />
   </component>
@@ -116,6 +117,6 @@
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/taskflow$main.coverage" NAME="main Coverage Results" MODIFIED="1782508342483" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/taskflow$main.coverage" NAME="main Coverage Results" MODIFIED="1782521904603" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
