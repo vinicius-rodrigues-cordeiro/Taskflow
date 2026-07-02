@@ -1,8 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
-from model.tarefa import Status
-
+from model.tarefa import Status, Tarefa
 
 
 class JanelaPrincipal:
@@ -194,9 +193,16 @@ class JanelaEdicao(JanelaFormulario):
         descricao = self.entry_descricao.get()
         prioridade = self.combo_box_prioridade.get()
         prazo = self.prazo.get_date().strftime("%Y-%m-%d")
-        novo_status = self.combo_box_status.get()
+        novo_status = Status(self.combo_box_status.get())
+        if self.tarefa.status == Status.CONCLUIDA and novo_status == Status.EM_ANDAMENTO:
+            confirmado = messagebox.askyesno("Atenção!", "Você deseja reverter uma tarefa concluída para Em andamento?")
+            if not confirmado:
+                return None
+            self.service.atualizar_status(str(self.tarefa.id), Status(novo_status), confirmacao=True)
+
+        else:
+            self.service.atualizar_status(str(self.tarefa.id), Status(novo_status))
 
         self.service.atualizar_tarefa(str(self.tarefa.id), titulo, prioridade, prazo, descricao)
-        self.service.atualizar_status(str(self.tarefa.id), Status(novo_status))
         self.ao_salvar()
         self.destroy()
