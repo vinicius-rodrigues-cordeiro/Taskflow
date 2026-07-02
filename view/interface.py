@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
+from model.tarefa import Status
+
 
 
 class JanelaPrincipal:
@@ -55,8 +57,16 @@ class JanelaPrincipal:
 
     def botao_criar_tarefa(self):
         JanelaFormulario(self.root, self.service, self._carregar_tarefas)
+
     def botao_editar_tarefa(self):
-        pass
+        selecionado = self.tabela.selection()
+        if not selecionado:
+            messagebox.showwarning("Atenção", "Selecione uma tarefa primeiro.")
+            return None
+
+        self.id_tarefa = selecionado[0]
+        tarefa = self.service.buscar_por_id(self.id_tarefa)
+        JanelaEdicao(self.root, self.service, self._carregar_tarefas, tarefa)
 
     def botao_excluir_tarefa(self):
         selecionado = self.tabela.selection()
@@ -155,4 +165,38 @@ class JanelaFormulario(tk.Toplevel):
 
 
     def botao_cancelar_tarefa(self):
+        self.destroy()
+
+class JanelaEdicao(JanelaFormulario):
+    def __init__(self, parent, service, ao_salvar, tarefa):
+        super().__init__(parent, service, ao_salvar)
+        self.tarefa = tarefa
+        self.title('Formulario para edição de tarefas')
+        self.service = service
+        self.ao_salvar = ao_salvar
+
+        self.entry_titulo.delete(0, tk.END)  # limpa
+        self.entry_titulo.insert(0,self.tarefa.titulo)
+
+        self.entry_descricao.delete(0, tk.END)
+        self.entry_descricao.insert(0,self.tarefa.descricao)
+
+        self.combo_box_prioridade.set(self.tarefa.prioridade.value)
+        self.combo_box_status.set(self.tarefa.status.value)
+        self.combo_box_status['values'] = ["Pendente", "Em andamento", "Concluida", "Cancelada"]
+
+        self.prazo.set_date(self.tarefa.prazo)
+
+        self.btn_salvar.config(command=self.botao_atualizar_tarefa)
+
+    def botao_atualizar_tarefa(self):
+        titulo = self.entry_titulo.get()
+        descricao = self.entry_descricao.get()
+        prioridade = self.combo_box_prioridade.get()
+        prazo = self.prazo.get_date().strftime("%Y-%m-%d")
+        novo_status = self.combo_box_status.get()
+
+        self.service.atualizar_tarefa(str(self.tarefa.id), titulo, prioridade, prazo, descricao)
+        self.service.atualizar_status(str(self.tarefa.id), Status(novo_status))
+        self.ao_salvar()
         self.destroy()

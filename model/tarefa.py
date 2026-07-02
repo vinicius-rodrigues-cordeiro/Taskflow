@@ -69,6 +69,10 @@ class Tarefa:
     def prioridade(self):
         return self.__prioridade
 
+    @prioridade.setter
+    def prioridade(self, nova_prioridade):
+        self.__prioridade = nova_prioridade
+
     @property
     def tarefa_concluida(self):
         return self.__status == Status.CONCLUIDA
