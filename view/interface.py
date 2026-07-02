@@ -1,6 +1,8 @@
 import tkinter as tk
+from enum import Enum
 from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
+
 from model.tarefa import Status, Tarefa
 
 
@@ -81,7 +83,13 @@ class JanelaPrincipal:
         return None
 
     def botao_ver_tarefa(self):
-        pass
+        selecionado = self.tabela.selection()
+        if not selecionado:
+            messagebox.showwarning("Atenção", "Selecione uma tarefa primeiro.")
+            return None
+        self.id_tarefa = selecionado[0]
+        tarefa = self.service.buscar_por_id(self.id_tarefa)
+        JanelaDetalhes(self.root, self.service, tarefa)
 
 
     def _carregar_tarefas(self):
@@ -206,3 +214,18 @@ class JanelaEdicao(JanelaFormulario):
         self.service.atualizar_tarefa(str(self.tarefa.id), titulo, prioridade, prazo, descricao)
         self.ao_salvar()
         self.destroy()
+
+class JanelaDetalhes(tk.Toplevel):
+    def __init__(self, parent, service, tarefa):
+        super().__init__(parent)
+
+        tk.Label(self, text=f'ID: {tarefa.id},').pack(pady=5)
+        tk.Label(self, text=f'Data de criação: {tarefa.criado_em}').pack(pady=5)
+        tk.Label(self, text=f'Titulo: {tarefa.titulo}').pack(pady=5)
+        tk.Label(self, text=f'Descrição: {tarefa.descricao}').pack(pady=5)
+        tk.Label(self, text=f'Prioridade: {tarefa.prioridade.value}').pack(pady=5)
+        tk.Label(self, text=f'Status: {tarefa.status.value}').pack(pady=5)
+        tk.Label(self, text=f'Prazo: {tarefa.prazo}').pack(pady=5)
+
+        self.btn_fechar = tk.Button(self, text="Fechar", command=self.destroy)
+        self.btn_fechar.pack(pady=10)
