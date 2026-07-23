@@ -3,6 +3,7 @@ from enum import Enum
 from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
 
+from model import tarefa
 from model.tarefa import Status, Tarefa
 
 
@@ -23,11 +24,42 @@ class JanelaPrincipal:
         self.janela = tk.Frame(self.root, bg='white')
         self.janela.pack(fill='both', expand=True)
 
-        self.sidebar = tk.Frame(self.janela, bg='gray', width=150)
+        self.sidebar = tk.Frame(self.janela, bg='white', width=150)
         self.sidebar.pack(side='left', fill='y')
 
-        self.conteudo = tk.Frame(self.janela, bg='white', width=500)
+        self.area_direita = tk.Frame(self.janela, bg='white', width=150)
+        self.area_direita.pack(side='right', fill='both', expand=True)
+
+        self.header = tk.Frame(self.area_direita, bg='white', width=150)
+        self.header.pack(side='top', fill='x')
+
+        self.conteudo = tk.Frame(self.area_direita, bg='white', width=500)
         self.conteudo.pack(side='right', fill='both', expand=True)
+
+        # Label e Combobox de Status
+        tk.Label(self.header, text="Status:").pack(side='left', padx=5)
+        self.combo_status = ttk.Combobox(self.header,
+                                         values=["Todos",
+                                                 "Pendente",
+                                                 "Em andamento",
+                                                 "Concluida",
+                                                 "Cancelada"],
+                                         width=15)
+        self.combo_status.current(0)
+        self.combo_status.pack(side='left', padx=5)
+        self.combo_status.bind("<<ComboboxSelected>>", lambda e: self._filtrar_tarefas())
+
+        # Label e Combobox de Prioridade
+        tk.Label(self.header, text="Prioridade:").pack(side='left', padx=5)
+        self.combo_prioridade = ttk.Combobox(self.header,
+                                             values=["Todas",
+                                                     "Baixa",
+                                                     "Media",
+                                                     "Alta"],
+                                             width=15)
+        self.combo_prioridade.current(0)
+        self.combo_prioridade.pack(side='left', padx=5)
+        self.combo_prioridade.bind("<<ComboboxSelected>>", lambda e: self._filtrar_tarefas())
 
         self.tabela = ttk.Treeview(self.conteudo, columns=('Col1', 'Col2', 'Col3', 'Col4', 'Col5'), show='headings')
         self.tabela.heading('Col1', text='Data de criação')
@@ -54,6 +86,15 @@ class JanelaPrincipal:
 
         self.btn_ver = tk.Button(self.sidebar, text="Ver", command=self.botao_ver_tarefa)
         self.btn_ver.pack(side='top', fill='x')
+
+
+    def _filtrar_tarefas(self):
+        status = self.combo_status.get()
+        status = None if status == "Todos" else status
+        prioridade = self.combo_prioridade.get()
+        prioridade = None if prioridade == "Todos" else prioridade
+        tarefas = self.service.listar_com_filtro(status, prioridade)
+        self._carregar_tarefas(tarefas)
 
 
     def botao_criar_tarefa(self):
@@ -92,11 +133,12 @@ class JanelaPrincipal:
         JanelaDetalhes(self.root, self.service, tarefa)
 
 
-    def _carregar_tarefas(self):
+    def _carregar_tarefas(self, tarefas=None):
+        if tarefas is None:
+            tarefas = self.service.listar_tarefas()
+
         for item in self.tabela.get_children():
             self.tabela.delete(item)
-
-        tarefas = self.service.listar_tarefas()
 
         for t in tarefas:
             self.tabela.insert(
