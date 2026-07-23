@@ -76,6 +76,19 @@ class TarefaService:
                 t.append(tarefa)
         return t
 
+    def listar_com_filtro(self, status=None, prioridade=None):
+        tarefas = self.listar_tarefas()
+
+        if status is not None:
+            tarefas = [t for t in tarefas if t.status == Status(status)]
+
+
+        if prioridade is not None:
+            tarefas = [t for t in tarefas if t.prioridade == Prioridade(prioridade)]
+
+        return tarefas
+
+
     def listar_canceladas(self):
         tarefas = self.repo.buscar_todos()
         t = []
