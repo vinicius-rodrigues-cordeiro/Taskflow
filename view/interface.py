@@ -84,8 +84,11 @@ class JanelaPrincipal:
         self.btn_excluir = tk.Button(self.sidebar, text="Excluir", command=self.botao_excluir_tarefa)
         self.btn_excluir.pack(side='top', fill='x')
 
-        self.btn_ver = tk.Button(self.sidebar, text="Ver", command=self.botao_ver_tarefa)
-        self.btn_ver.pack(side='top', fill='x')
+        self.btn_ver_detalhes = tk.Button(self.sidebar, text="Ver", command=self.botao_ver_tarefa)
+        self.btn_ver_detalhes.pack(side='top', fill='x')
+
+        self.btn_ver_canceladas = tk.Button(self.sidebar, text="Canceladas", command=self.botao_ver_tarefas_canceladas)
+        self.btn_ver_canceladas.pack(side='top', fill='x')
 
 
     def _filtrar_tarefas(self):
@@ -151,6 +154,9 @@ class JanelaPrincipal:
         tarefa = self.service.buscar_por_id(self.id_tarefa)
         JanelaDetalhes(self.root, self.service, tarefa)
 
+
+    def botao_ver_tarefas_canceladas(self):
+        JanelaCanceladas(self.root, self.service)
 
     def _carregar_tarefas(self, tarefas=None):
         if tarefas is None:
@@ -290,3 +296,48 @@ class JanelaDetalhes(tk.Toplevel):
 
         self.btn_fechar = tk.Button(self, text="Fechar", command=self.destroy)
         self.btn_fechar.pack(pady=10)
+
+class JanelaCanceladas(tk.Toplevel):
+    def __init__(self, parent, service):
+        super().__init__(parent)
+
+        self.service = service
+        self.title('Tarefas Canceladas')
+        self.geometry('600x400')
+        self.transient(parent)
+        self.grab_set()
+
+        self.tabela = ttk.Treeview(self, columns=('Col1', 'Col2', 'Col3', 'Col4', 'Col5'), show='headings')
+        self.tabela.heading('Col1', text='Data de criação')
+        self.tabela.column('Col1', width=100)
+        self.tabela.heading('Col2', text='Titulo')
+        self.tabela.column('Col2', width=100)
+        self.tabela.heading('Col3', text='Prioridade')
+        self.tabela.column('Col3', width=100)
+        self.tabela.heading('Col4', text='Prazo')
+        self.tabela.column('Col4', width=100)
+        self.tabela.heading('Col5', text='Status')
+        self.tabela.column('Col5', width=100)
+        self._carregar_canceladas()
+        self.tabela.pack(fill='both', expand=True)
+
+        self.btn_ver_tarefa = tk.Button(self, text="Ver tarefa", command=self._botao_ver_tarefa)
+        self.btn_ver_tarefa.pack(side='bottom', fill='x')
+
+        self.btn_fechar = tk.Button(self, text="Fechar", command=self.destroy)
+        self.btn_fechar.pack(pady=10)
+
+    def _carregar_canceladas(self):
+        tarefas = self.service.listar_canceladas()
+        for t in tarefas:
+            self.tabela.insert('', 'end', iid=str(t.id),
+            values=(t.criado_em, t.titulo, t.prioridade.value, t.prazo, t.status.value))
+
+    def _botao_ver_tarefa(self):
+        selecionado = self.tabela.selection()
+        if not selecionado:
+            messagebox.showwarning("Atenção", "Selecione uma tarefa primeiro.")
+            return
+        id_tarefa = selecionado[0]
+        tarefa = self.service.buscar_por_id(id_tarefa)
+        JanelaDetalhes(self, self.service, tarefa)
