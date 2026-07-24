@@ -92,7 +92,7 @@ class JanelaPrincipal:
         status = self.combo_status.get()
         status = None if status == "Todos" else status
         prioridade = self.combo_prioridade.get()
-        prioridade = None if prioridade == "Todos" else prioridade
+        prioridade = None if prioridade == "Todas" else prioridade
         tarefas = self.service.listar_com_filtro(status, prioridade)
         self._carregar_tarefas(tarefas)
 
