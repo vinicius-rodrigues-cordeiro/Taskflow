@@ -62,15 +62,15 @@ class JanelaPrincipal:
         self.combo_prioridade.bind("<<ComboboxSelected>>", lambda e: self._filtrar_tarefas())
 
         self.tabela = ttk.Treeview(self.conteudo, columns=('Col1', 'Col2', 'Col3', 'Col4', 'Col5'), show='headings')
-        self.tabela.heading('Col1', text='Data de criação')
+        self.tabela.heading('Col1', text='Data de criação', command= lambda: self._ordenar_colunas('Col1'))
         self.tabela.column('Col1', width=100)
-        self.tabela.heading('Col2', text='Titulo')
+        self.tabela.heading('Col2', text='Titulo', command= lambda: self._ordenar_colunas('Col2'))
         self.tabela.column('Col2', width=100)
-        self.tabela.heading('Col3', text='Prioridade')
+        self.tabela.heading('Col3', text='Prioridade', command= lambda: self._ordenar_colunas('Col3'))
         self.tabela.column('Col3', width=100)
-        self.tabela.heading('Col4', text='Prazo')
+        self.tabela.heading('Col4', text='Prazo', command= lambda: self._ordenar_colunas('Col4'))
         self.tabela.column('Col4', width=100)
-        self.tabela.heading('Col5', text='Status')
+        self.tabela.heading('Col5', text='Status', command= lambda: self._ordenar_colunas('Col5'))
         self.tabela.column('Col5', width=100)
         self._carregar_tarefas()
         self.tabela.pack(fill='both', expand=True)
@@ -94,6 +94,25 @@ class JanelaPrincipal:
         prioridade = self.combo_prioridade.get()
         prioridade = None if prioridade == "Todos" else prioridade
         tarefas = self.service.listar_com_filtro(status, prioridade)
+        self._carregar_tarefas(tarefas)
+
+    def _ordenar_colunas(self, coluna):
+        ids_tarefas = self.tabela.get_children()
+        tarefas = [self.service.buscar_por_id(id_tarefa) for id_tarefa in ids_tarefas]
+        ordem_de_prioridade = {"Alta": 1, "Media": 2, "Baixa": 3}
+        ordem_de_status = {"Pendente": 1, "Em andamento": 2, "Cancelada": 3, "Concluida": 4}
+
+        if coluna == "Col1":
+            tarefas.sort(key=lambda t: t.criado_em)
+        elif coluna == "Col2":
+            tarefas.sort(key=lambda t: t.titulo)
+        elif coluna == "Col3":
+            tarefas.sort(key=lambda t: ordem_de_prioridade[t.prioridade.value])
+        elif coluna == 'Col4':
+            tarefas.sort(key=lambda t: (t.prazo, ordem_de_prioridade[t.prioridade.value]))
+        elif coluna == 'Col5':
+            tarefas.sort(key=lambda t: ordem_de_status[t.status.value])
+
         self._carregar_tarefas(tarefas)
 
 
